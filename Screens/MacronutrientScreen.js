@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import styles from '../Styles/MacronutrientScreenStyles';
+import {CheckOrientation} from '../Components/CheckOrientation';
 
 const MacronutrientScreen = ({route, navigation}) => {
   const [backgroundColor1, setBackgroundColor1] = useState();
@@ -20,6 +21,7 @@ const MacronutrientScreen = ({route, navigation}) => {
   const [EE, setEE] = useState('0');
   const {mybmr} = route.params;
   //console.log(mybmr);
+  const orientation = CheckOrientation();
 
   const Check_Activity = text => {
     if (text == 'Normal') {
@@ -92,113 +94,244 @@ const MacronutrientScreen = ({route, navigation}) => {
       setFats(f);
     }
   };
-  return (
-    <View style={styles.conatiner}>
-      <ScrollView>
-        <View style={styles.flexbox2}>
-          <Text style={styles.activitytext}>Physical Activity Level</Text>
-        </View>
 
-        <View style={styles.flexbox3}>
-          <TouchableOpacity
-            onPress={() => Check_Activity('Normal')}
-            style={[styles.button, {backgroundColor: backgroundColor1}]}>
-            <Image
-              style={styles.image}
-              source={require('../assets/Images/sportman.png')}
-            />
-            <Text style={styles.text}>Normal</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => Check_Activity('Not Active')}
-            style={[styles.button, {backgroundColor: backgroundColor2}]}>
-            <Image
-              style={styles.image}
-              source={require('../assets/Images/guy.png')}
-            />
-            <Text style={styles.text}>Not Active</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.flexbox3}>
-          <TouchableOpacity
-            onPress={() => Check_Activity('Moderate')}
-            style={[styles.button, {backgroundColor: backgroundColor3}]}>
-            <Image
-              style={styles.image}
-              source={require('../assets/Images/man.png')}
-            />
-            <Text style={styles.text}>Moderate</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => Check_Activity('Very Active')}
-            style={[styles.button, {backgroundColor: backgroundColor4}]}>
-            <Image
-              style={styles.image}
-              source={require('../assets/Images/businessman.png')}
-            />
-            <Text style={styles.text}>Very Active</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.flexbox4}>
-          <Text style={styles.text1}>
-            Your TDEE (Total Daily Energy Expenditure):
-          </Text>
-        </View>
-
-        <View style={styles.flexbox5}>
-          <Text style={styles.text2}>{EE} calories/day</Text>
-        </View>
-
-        <View style={styles.flexbox6}>
-          <Text style={styles.text3}>Suggested macro based on your TDEE:</Text>
-        </View>
-
-        <View style={styles.flexbox4}>
-          <Text style={styles.text4}>grams/day</Text>
-        </View>
-
-        <View style={styles.flexbox8}>
-          <View style={styles.box}></View>
-
-          <View style={styles.flexbox9}>
-            <Text style={styles.text5}>Carbs</Text>
+  if (orientation === 'PORTRAIT') {
+    return (
+      <View style={styles.conatiner}>
+        <ScrollView>
+          <View style={styles.flexbox2}>
+            <Text style={styles.activitytext}>
+              Select Physical Activity Level
+            </Text>
           </View>
 
-          <View style={styles.flexbox9}>
-            <Text style={styles.text6}>{carbs}</Text>
-          </View>
-        </View>
+          <View style={styles.flexbox3}>
+            <TouchableOpacity
+              onPress={() => Check_Activity('Normal')}
+              style={[styles.button, {backgroundColor: backgroundColor1}]}>
+              <Image
+                style={styles.image}
+                source={require('../assets/Images/sportman.png')}
+              />
+              <Text style={styles.text}>Normal</Text>
+            </TouchableOpacity>
 
-        <View style={styles.flexbox8}>
-          <View style={styles.box1}></View>
-
-          <View style={styles.flexbox9}>
-            <Text style={styles.text5}>Protiens</Text>
-          </View>
-
-          <View style={styles.flexbox9}>
-            <Text style={styles.text6}>{protiens}</Text>
-          </View>
-        </View>
-
-        <View style={styles.flexbox8}>
-          <View style={styles.box2}></View>
-
-          <View style={styles.flexbox9}>
-            <Text style={styles.text5}>Fats</Text>
+            <TouchableOpacity
+              onPress={() => Check_Activity('Not Active')}
+              style={[styles.button, {backgroundColor: backgroundColor2}]}>
+              <Image
+                style={styles.image}
+                source={require('../assets/Images/guy.png')}
+              />
+              <Text style={styles.text}>Not Active</Text>
+            </TouchableOpacity>
           </View>
 
-          <View style={styles.flexbox9}>
-            <Text style={styles.text6}>{fats}</Text>
+          <View style={styles.flexbox3}>
+            <TouchableOpacity
+              onPress={() => Check_Activity('Moderate')}
+              style={[styles.button, {backgroundColor: backgroundColor3}]}>
+              <Image
+                style={styles.image}
+                source={require('../assets/Images/man.png')}
+              />
+              <Text style={styles.text}>Moderate</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => Check_Activity('Very Active')}
+              style={[styles.button, {backgroundColor: backgroundColor4}]}>
+              <Image
+                style={styles.image}
+                source={require('../assets/Images/businessman.png')}
+              />
+              <Text style={styles.text}>Very Active</Text>
+            </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
-    </View>
-  );
+
+          <View style={styles.flexbox4}>
+            <Text style={styles.text1}>
+              Your TDEE (Total Daily Energy Expenditure):
+            </Text>
+          </View>
+
+          <View style={styles.flexbox5}>
+            <Text style={styles.text2}>{EE} calories/day</Text>
+          </View>
+
+          <View style={styles.flexbox6}>
+            <Text style={styles.text3}>
+              Suggested macro based on your TDEE:
+            </Text>
+          </View>
+
+          <View style={styles.flexbox4}>
+            <Text style={styles.text4}>grams/day</Text>
+          </View>
+
+          <View style={styles.flexbox8}>
+            <View style={styles.box}></View>
+
+            <View style={styles.flexbox9}>
+              <Text style={styles.text5}>Carbs</Text>
+            </View>
+
+            <View style={styles.flexbox9}>
+              <Text style={styles.text6}>{carbs}</Text>
+            </View>
+          </View>
+
+          <View style={styles.flexbox8}>
+            <View style={styles.box1}></View>
+
+            <View style={styles.flexbox9}>
+              <Text style={styles.text5}>Protiens</Text>
+            </View>
+
+            <View style={styles.flexbox9}>
+              <Text style={styles.text6}>{protiens}</Text>
+            </View>
+          </View>
+
+          <View style={styles.flexbox8}>
+            <View style={styles.box2}></View>
+
+            <View style={styles.flexbox9}>
+              <Text style={styles.text5}>Fats</Text>
+            </View>
+
+            <View style={styles.flexbox9}>
+              <Text style={styles.text6}>{fats}</Text>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.Landscapeconatiner}>
+        <ScrollView>
+          <View style={styles.Landscapeflexbox2}>
+            <Text style={styles.Landscapeactivitytext}>
+              Select Physical Activity Level
+            </Text>
+          </View>
+
+          <View style={styles.Landscapeflexbox3}>
+            <TouchableOpacity
+              onPress={() => Check_Activity('Normal')}
+              style={[
+                styles.Landscapebutton,
+                {backgroundColor: backgroundColor1},
+              ]}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/sportman.png')}
+              />
+              <Text style={styles.Landscapetext}>Normal</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => Check_Activity('Not Active')}
+              style={[
+                styles.Landscapebutton,
+                {backgroundColor: backgroundColor2},
+              ]}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/guy.png')}
+              />
+              <Text style={styles.Landscapetext}>Not Active</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => Check_Activity('Moderate')}
+              style={[
+                styles.Landscapebutton,
+                {backgroundColor: backgroundColor3},
+              ]}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/man.png')}
+              />
+              <Text style={styles.Landscapetext}>Moderate</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => Check_Activity('Very Active')}
+              style={[
+                styles.Landscapebutton,
+                {backgroundColor: backgroundColor4},
+              ]}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/businessman.png')}
+              />
+              <Text style={styles.Landscapetext}>Very Active</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.Landscapeflexbox3}></View>
+
+          <View style={styles.Landscapeflexbox4}>
+            <Text style={styles.Landscapetext1}>
+              Your TDEE (Total Daily Energy Expenditure):
+            </Text>
+          </View>
+
+          <View style={styles.Landscapeflexbox5}>
+            <Text style={styles.Landscapetext2}>{EE} calories/day</Text>
+          </View>
+
+          <View style={styles.Landscapeflexbox6}>
+            <Text style={styles.Landscapetext3}>
+              Suggested macro based on your TDEE:
+            </Text>
+          </View>
+
+          <View style={styles.Landscapeflexbox4}>
+            <Text style={styles.Landscapetext4}>grams/day</Text>
+          </View>
+
+          <View style={styles.Landscapeflexbox8}>
+            <View style={styles.Landscapebox}></View>
+
+            <View style={styles.Landscapeflexbox9}>
+              <Text style={styles.Landscapetext5}>Carbs</Text>
+            </View>
+
+            <View style={styles.Landscapeflexbox9}>
+              <Text style={styles.Landscapetext6}>{carbs}</Text>
+            </View>
+          </View>
+
+          <View style={styles.Landscapeflexbox8}>
+            <View style={styles.Landscapebox1}></View>
+
+            <View style={styles.Landscapeflexbox9}>
+              <Text style={styles.Landscapetext5}>Protiens</Text>
+            </View>
+
+            <View style={styles.Landscapeflexbox9}>
+              <Text style={styles.Landscapetext6}>{protiens}</Text>
+            </View>
+          </View>
+
+          <View style={styles.Landscapeflexbox8}>
+            <View style={styles.Landscapebox2}></View>
+
+            <View style={styles.Landscapeflexbox9}>
+              <Text style={styles.Landscapetext5}>Fats</Text>
+            </View>
+
+            <View style={styles.Landscapeflexbox9}>
+              <Text style={styles.Landscapetext6}>{fats}</Text>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 };
 
 export default MacronutrientScreen;

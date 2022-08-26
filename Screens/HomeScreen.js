@@ -14,6 +14,7 @@ import {firebaseConfig} from '../FirebaseConfig';
 import {getDatabase, ref, set, get, child} from 'firebase/database';
 import {useSelector, useDispatch} from 'react-redux';
 import SetGoalScreen from './SetGoalScreen';
+import {CheckOrientation} from '../Components/CheckOrientation';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -26,6 +27,7 @@ const HomeScreen = () => {
   const dbRef = ref(getDatabase());
   const checkemail = useSelector(state => state.email);
   //console.log(checkemail);
+  const orientation = CheckOrientation();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -110,75 +112,147 @@ const HomeScreen = () => {
     }
   };
 
-  return (
-    <View style={styles.conatainer}>
-      <View style={styles.flexbox1}>
-        <TouchableOpacity
-          onPress={() => Get_Data_firebase('BMI')}
-          style={styles.button}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/speedometer.png')}
-          />
-          <Text style={styles.text}>Body Mass Index</Text>
-        </TouchableOpacity>
+  if (orientation === 'PORTRAIT') {
+    return (
+      <View style={styles.conatainer}>
+        <View style={styles.flexbox1}>
+          <TouchableOpacity
+            onPress={() => Get_Data_firebase('BMI')}
+            style={styles.button}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/speedometer.png')}
+            />
+            <Text style={styles.text}>Body Mass Index</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => Get_Data_firebase('macronutrient')}
-          style={styles.button}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/macronutrient.png')}
-          />
-          <Text style={styles.text}>Macronutrients</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => Get_Data_firebase('macronutrient')}
+            style={styles.button}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/macronutrient.png')}
+            />
+            <Text style={styles.text}>Macronutrients</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.flexbox1}>
+          <TouchableOpacity
+            onPress={() => Get_Data_firebase('BMR')}
+            style={styles.button}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/fire.png')}
+            />
+            <Text style={styles.text}>Energy Expenditure</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => Get_Data_firebase('WorkoutCalculator')}
+            style={styles.button}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/workout.png')}
+            />
+            <Text style={styles.text}>Workout Time Calculator</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.flexbox1}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('setgoalscreen')}
+            style={styles.button}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/goal.png')}
+            />
+            <Text style={styles.text}>Set Goal</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => Get_Data_firebase('Exercises')}
+            style={styles.button}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/weights.png')}
+            />
+            <Text style={styles.text}>Exercises</Text>
+          </TouchableOpacity>
+        </View>
       </View>
+    );
+  } else {
+    return (
+      <View style={styles.Landscapeconatainer}>
+        <ScrollView>
+          <View style={styles.Landscapeflexbox1}>
+            <TouchableOpacity
+              onPress={() => Get_Data_firebase('BMI')}
+              style={styles.Landscapebutton}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/speedometer.png')}
+              />
+              <Text style={styles.Landscapetext}>Body Mass Index</Text>
+            </TouchableOpacity>
 
-      <View style={styles.flexbox1}>
-        <TouchableOpacity
-          onPress={() => Get_Data_firebase('BMR')}
-          style={styles.button}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/fire.png')}
-          />
-          <Text style={styles.text}>Energy Expenditure</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Get_Data_firebase('macronutrient')}
+              style={styles.Landscapebutton}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/macronutrient.png')}
+              />
+              <Text style={styles.Landscapetext}>Macronutrients</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => Get_Data_firebase('WorkoutCalculator')}
-          style={styles.button}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/workout.png')}
-          />
-          <Text style={styles.text}>Workout Time Calculator</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => Get_Data_firebase('BMR')}
+              style={styles.Landscapebutton}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/fire.png')}
+              />
+              <Text style={styles.Landscapetext}>Energy Expenditure</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.Landscapeflexbox1}>
+            <TouchableOpacity
+              onPress={() => Get_Data_firebase('WorkoutCalculator')}
+              style={styles.Landscapebutton}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/workout.png')}
+              />
+              <Text style={styles.Landscapetext}>Workout Time Calculator</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('setgoalscreen')}
+              style={styles.Landscapebutton}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/goal.png')}
+              />
+              <Text style={styles.Landscapetext}>Set Goal</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => Get_Data_firebase('Exercises')}
+              style={styles.Landscapebutton}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/weights.png')}
+              />
+              <Text style={styles.Landscapetext}>Exercises</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </View>
-
-      <View style={styles.flexbox1}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('setgoalscreen')}
-          style={styles.button}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/goal.png')}
-          />
-          <Text style={styles.text}>Set Goal</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => Get_Data_firebase('Exercises')}
-          style={styles.button}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/weights.png')}
-          />
-          <Text style={styles.text}>Exercises</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
+  }
 };
 
 export default HomeScreen;

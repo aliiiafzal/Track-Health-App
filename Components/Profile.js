@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import styles from '../Styles/ProfileStyles';
@@ -20,6 +21,7 @@ import {
   uploadBytes,
   ref as Ref,
 } from 'firebase/storage';
+import {CheckOrientation} from '../Components/CheckOrientation';
 
 const Profile = ({navigation}) => {
   const checkemail = useSelector(state => state.email);
@@ -35,6 +37,7 @@ const Profile = ({navigation}) => {
   const [email, setEmail] = useState();
   const app = initializeApp(firebaseConfig);
   const dbref = getDatabase(app);
+  const orientation = CheckOrientation();
 
   //console.log(checkemail);
 
@@ -139,74 +142,147 @@ const Profile = ({navigation}) => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.flexbox1}>
-        <TouchableOpacity
-          style={{borderWidth: 1, borderRadius: 200 / 2}}
-          onPress={() => pickSingle(true, true)}>
-          <Image
-            source={{
-              uri: url,
-            }}
-            style={styles.image}
-          />
-        </TouchableOpacity>
-        <Text style={styles.name}>{username}</Text>
-        <Text style={styles.email}>{checkemail}</Text>
+  if (orientation === 'PORTRAIT') {
+    return (
+      <View style={styles.container}>
+        <View style={styles.flexbox1}>
+          <TouchableOpacity
+            style={{borderWidth: 1, borderRadius: 200 / 2}}
+            onPress={() => pickSingle(true, true)}>
+            <Image
+              source={{
+                uri: url,
+              }}
+              style={styles.image}
+            />
+          </TouchableOpacity>
+          <Text style={styles.name}>{username}</Text>
+          <Text style={styles.email}>{checkemail}</Text>
+        </View>
+
+        <View style={styles.flexbox2}>
+          <View style={styles.icon}>
+            <Icon name="weight-kilogram" size={37} color="black" />
+          </View>
+          <View style={styles.weight}>
+            <Text style={styles.weighttext}>Weight:</Text>
+          </View>
+          <View style={styles.getweight}>
+            <Text style={styles.getweighttext}>{weight} Kg</Text>
+          </View>
+        </View>
+
+        <View style={styles.flexbox2}>
+          <View style={styles.icon}>
+            <Icon name="human-male-height" size={37} color="black" />
+          </View>
+          <View style={styles.weight}>
+            <Text style={styles.weighttext}>Height:</Text>
+          </View>
+          <View style={styles.getweight}>
+            <Text style={styles.getweighttext}>{height} m</Text>
+          </View>
+        </View>
+
+        <View style={styles.flexbox2}>
+          <View style={styles.icon}>
+            <Icon name="sort-numeric-ascending" size={37} color="black" />
+          </View>
+          <View style={styles.weight}>
+            <Text style={styles.weighttext}>Age:</Text>
+          </View>
+
+          <View style={styles.getweight}>
+            <Text style={styles.getweighttext}>{age} Years</Text>
+          </View>
+        </View>
+
+        <View style={styles.flexbox2}>
+          <View style={styles.icon}>
+            <Icon name="gender-male" size={37} color="black" />
+          </View>
+          <View style={styles.weight}>
+            <Text style={styles.weighttext}>Gender:</Text>
+          </View>
+
+          <View style={styles.getweight}>
+            <Text style={styles.getweighttext}>{gender}</Text>
+          </View>
+        </View>
       </View>
+    );
+  } else {
+    return (
+      <View style={styles.Landscapecontainer}>
+        <ScrollView>
+          <View style={styles.Landscapeflexbox1}>
+            <TouchableOpacity
+              style={{borderWidth: 1, borderRadius: 200 / 2}}
+              onPress={() => pickSingle(true, true)}>
+              <Image
+                source={{
+                  uri: url,
+                }}
+                style={styles.image}
+              />
+            </TouchableOpacity>
+            <Text style={styles.Landscapename}>{username}</Text>
+            <Text style={styles.Landscapeemail}>{checkemail}</Text>
+          </View>
 
-      <View style={styles.flexbox2}>
-        <View style={styles.icon}>
-          <Icon name="weight-kilogram" size={37} color="black" />
-        </View>
-        <View style={styles.weight}>
-          <Text style={styles.weighttext}>Weight:</Text>
-        </View>
-        <View style={styles.getweight}>
-          <Text style={styles.getweighttext}>{weight} Kg</Text>
-        </View>
+          <View style={styles.Landscapeflexbox2}>
+            <View style={styles.Landscapeicon}>
+              <Icon name="weight-kilogram" size={37} color="black" />
+            </View>
+            <View style={styles.Landscapegetweight}>
+              <Text style={styles.Landscapeweighttext}>Weight:</Text>
+            </View>
+            <View style={styles.Landscapegetweight}>
+              <Text style={styles.Landscapegetweighttext}>{weight} Kg</Text>
+            </View>
+          </View>
+
+          <View style={styles.Landscapeflexbox2}>
+            <View style={styles.Landscapeicon}>
+              <Icon name="human-male-height" size={37} color="black" />
+            </View>
+            <View style={styles.Landscapegetweight}>
+              <Text style={styles.Landscapeweighttext}>Height:</Text>
+            </View>
+            <View style={styles.Landscapegetweight}>
+              <Text style={styles.Landscapegetweighttext}>{height} m</Text>
+            </View>
+          </View>
+
+          <View style={styles.Landscapeflexbox2}>
+            <View style={styles.Landscapeicon}>
+              <Icon name="sort-numeric-ascending" size={37} color="black" />
+            </View>
+            <View style={styles.Landscapegetweight}>
+              <Text style={styles.Landscapeweighttext}>Age:</Text>
+            </View>
+
+            <View style={styles.Landscapegetweight}>
+              <Text style={styles.Landscapegetweighttext}>{age} Years</Text>
+            </View>
+          </View>
+
+          <View style={styles.Landscapeflexbox2}>
+            <View style={styles.Landscapeicon}>
+              <Icon name="gender-male" size={37} color="black" />
+            </View>
+            <View style={styles.Landscapegetweight}>
+              <Text style={styles.Landscapeweighttext}>Gender:</Text>
+            </View>
+
+            <View style={styles.Landscapegetweight}>
+              <Text style={styles.Landscapegetweighttext}>{gender}</Text>
+            </View>
+          </View>
+        </ScrollView>
       </View>
-
-      <View style={styles.flexbox2}>
-        <View style={styles.icon}>
-          <Icon name="human-male-height" size={37} color="black" />
-        </View>
-        <View style={styles.weight}>
-          <Text style={styles.weighttext}>Height:</Text>
-        </View>
-        <View style={styles.getweight}>
-          <Text style={styles.getweighttext}>{height} m</Text>
-        </View>
-      </View>
-
-      <View style={styles.flexbox2}>
-        <View style={styles.icon}>
-          <Icon name="sort-numeric-ascending" size={37} color="black" />
-        </View>
-        <View style={styles.weight}>
-          <Text style={styles.weighttext}>Age:</Text>
-        </View>
-
-        <View style={styles.getweight}>
-          <Text style={styles.getweighttext}>{age} Years</Text>
-        </View>
-      </View>
-
-      <View style={styles.flexbox2}>
-        <View style={styles.icon}>
-          <Icon name="gender-male" size={37} color="black" />
-        </View>
-        <View style={styles.weight}>
-          <Text style={styles.weighttext}>Gender:</Text>
-        </View>
-
-        <View style={styles.getweight}>
-          <Text style={styles.getweighttext}>{gender}</Text>
-        </View>
-      </View>
-    </View>
-  );
+    );
+  }
 };
 
 export default Profile;

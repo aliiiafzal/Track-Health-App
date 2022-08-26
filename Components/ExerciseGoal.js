@@ -12,8 +12,10 @@ import styles from '../Styles/ExerciseGoalStyles';
 import {initializeApp} from 'firebase/app';
 import {firebaseConfig} from '../FirebaseConfig';
 import {getDatabase, ref, onValue} from 'firebase/database';
+import {CheckOrientation} from '../Components/CheckOrientation';
 
 const ExerciseGoal = ({route, navigation}) => {
+  const orientation = CheckOrientation();
   const {goal} = route.params;
   const app = initializeApp(firebaseConfig);
   const dbRef = getDatabase();
@@ -71,66 +73,144 @@ const ExerciseGoal = ({route, navigation}) => {
     }
   };
 
-  return (
-    <View style={styles.conatiner}>
-      <ScrollView>
-        <View style={styles.flexbox1}>
-          <Text style={styles.heading}>Exercises of Today</Text>
-        </View>
-
-        <View style={styles.flexbox2}>
-          <ImageBackground
-            source={{uri: e1Image}}
-            resizeMode="contain"
-            style={styles.backgroundgif}></ImageBackground>
-        </View>
-
-        <View style={styles.flexbox3}>
-          <View style={styles.flexbox4}>
-            <Text style={styles.exercisename}>{e1Name}</Text>
+  if (orientation === 'PORTRAIT') {
+    return (
+      <View style={styles.conatiner}>
+        <ScrollView>
+          <View style={styles.flexbox1}>
+            <Text style={styles.heading}>Exercises of Today</Text>
           </View>
 
-          <View style={styles.flexbox5}>
-            <Text style={styles.exerciseno}>{e1No}</Text>
-          </View>
-        </View>
-
-        <View style={styles.flexbox2}>
-          <ImageBackground
-            source={{uri: e2Image}}
-            resizeMode="contain"
-            style={styles.backgroundgif}></ImageBackground>
-        </View>
-
-        <View style={styles.flexbox3}>
-          <View style={styles.flexbox4}>
-            <Text style={styles.exercisename}>{e2Name}</Text>
+          <View style={styles.flexbox2}>
+            <ImageBackground
+              source={{uri: e1Image}}
+              resizeMode="contain"
+              style={styles.backgroundgif}></ImageBackground>
           </View>
 
-          <View style={styles.flexbox4}>
-            <Text style={styles.exerciseno}>{e2No}</Text>
-          </View>
-        </View>
+          <View style={styles.flexbox3}>
+            <View style={styles.flexbox4}>
+              <Text style={styles.exercisename}>{e1Name}</Text>
+            </View>
 
-        <View style={styles.flexbox2}>
-          <ImageBackground
-            source={{uri: e3Image}}
-            resizeMode="contain"
-            style={{height: 200, width: 200}}></ImageBackground>
-        </View>
-
-        <View style={styles.flexbox3}>
-          <View style={styles.flexbox4}>
-            <Text style={styles.exercisename}>{e3Name}</Text>
+            <View style={styles.flexbox5}>
+              <Text style={styles.exerciseno}>{e1No}</Text>
+            </View>
           </View>
 
-          <View style={styles.flexbox4}>
-            <Text style={styles.exerciseno}>{e3No}</Text>
+          <View style={styles.flexbox2}>
+            <ImageBackground
+              source={{uri: e2Image}}
+              resizeMode="contain"
+              style={styles.backgroundgif}></ImageBackground>
+          </View>
+
+          <View style={styles.flexbox3}>
+            <View style={styles.flexbox4}>
+              <Text style={styles.exercisename}>{e2Name}</Text>
+            </View>
+
+            <View style={styles.flexbox4}>
+              <Text style={styles.exerciseno}>{e2No}</Text>
+            </View>
+          </View>
+
+          <View style={styles.flexbox2}>
+            <ImageBackground
+              source={{uri: e3Image}}
+              resizeMode="contain"
+              style={{height: 200, width: 200}}></ImageBackground>
+          </View>
+
+          <View style={styles.flexbox3}>
+            <View style={styles.flexbox4}>
+              <Text style={styles.exercisename}>{e3Name}</Text>
+            </View>
+
+            <View style={styles.flexbox4}>
+              <Text style={styles.exerciseno}>{e3No}</Text>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.Landscapeconatiner}>
+        <View style={styles.Landscapeflexbox1}>
+          <Text style={styles.Landscapeheading}>Exercises of Today</Text>
+        </View>
+
+        <View style={{flex: 0.8, flexDirection: 'row'}}>
+          <View
+            style={{
+              flex: 0.5,
+            }}>
+            <View style={styles.Landscapeflexbox2}>
+              <ImageBackground
+                source={{uri: e1Image}}
+                resizeMode="contain"
+                style={styles.Landscapebackgroundgif}></ImageBackground>
+            </View>
+
+            <View style={styles.Landscapeflexbox3}>
+              <View style={styles.Landscapeflexbox4}>
+                <Text style={styles.Landscapeexercisename}>{e1Name}</Text>
+              </View>
+
+              <View style={styles.Landscapeflexbox5}>
+                <Text style={styles.Landscapeexerciseno}>{e1No}</Text>
+              </View>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flex: 0.5,
+            }}>
+            <View style={styles.Landscapeflexbox2}>
+              <ImageBackground
+                source={{uri: e2Image}}
+                resizeMode="contain"
+                style={styles.Landscapebackgroundgif}></ImageBackground>
+            </View>
+
+            <View style={styles.Landscapeflexbox3}>
+              <View style={styles.Landscapeflexbox4}>
+                <Text style={styles.Landscapeexercisename}>{e2Name}</Text>
+              </View>
+
+              <View style={styles.Landscapeflexbox4}>
+                <Text style={styles.Landscapeexerciseno}>{e2No}</Text>
+              </View>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flex: 0.5,
+            }}>
+            <View style={styles.Landscapeflexbox2}>
+              <ImageBackground
+                source={{uri: e3Image}}
+                resizeMode="contain"
+                style={styles.Landscapebackgroundgif}></ImageBackground>
+            </View>
+
+            <View style={styles.Landscapeflexbox3}>
+              <View style={styles.Landscapeflexbox4}>
+                <Text style={styles.Landscapeexercisename}>{e3Name}</Text>
+              </View>
+
+              <View style={styles.flexbox4}>
+                <Text style={styles.Landscapeexerciseno}>{e3No}</Text>
+              </View>
+            </View>
           </View>
         </View>
-      </ScrollView>
-    </View>
-  );
+      </View>
+    );
+  }
 };
 
 export default ExerciseGoal;

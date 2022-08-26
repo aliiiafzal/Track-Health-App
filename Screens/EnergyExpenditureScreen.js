@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Text,
   View,
@@ -12,9 +12,11 @@ import {
 import styles from '../Styles/EnergyExpenditureScreenStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Picker} from '@react-native-picker/picker';
+import {CheckOrientation} from '../Components/CheckOrientation';
 
 const EnergyExpenditureScreen = ({route, navigation}) => {
   const {mybmr} = route.params;
+  const orientation = CheckOrientation();
   //console.log(mybmr);
   const [activityLevel, setActivityLevel] = useState();
   //const [otherActivityLevel, setOtherActivityLevel] = useState();
@@ -35,6 +37,8 @@ const EnergyExpenditureScreen = ({route, navigation}) => {
     isValidAge: false,
     isValidGender: false,
   });
+  const heightref = useRef();
+  const ageref = useRef();
 
   const handleweight = val => {
     if (val.length != 0) {
@@ -187,183 +191,421 @@ const EnergyExpenditureScreen = ({route, navigation}) => {
     });
   };
 
-  return (
-    <View style={styles.conatiner}>
-      <View style={styles.flexbox1}>
-        <View style={styles.circle}>
-          <Text style={styles.circletext}>BMR</Text>
-          <Text style={styles.bmitxet}>{mybmr}</Text>
-          <Text style={{textAlign: 'center', fontSize: 20, color: 'black'}}>
-            TEE = {EE} KCal/day
-          </Text>
-          <Text style={{textAlign: 'center', fontSize: 15, color: 'black'}}>
-            (Total Energy Expenditure)
+  if (orientation === 'PORTRAIT') {
+    return (
+      <View style={styles.conatiner}>
+        <View style={styles.flexbox1}>
+          <View style={styles.circle}>
+            <Text style={styles.circletext}>BMR</Text>
+            <Text style={styles.bmitxet}>{mybmr}</Text>
+            <Text style={{textAlign: 'center', fontSize: 20, color: 'black'}}>
+              TEE = {EE} KCal/day
+            </Text>
+            <Text style={{textAlign: 'center', fontSize: 15, color: 'black'}}>
+              (Total Energy Expenditure)
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.flexbox2}>
+          <Text style={styles.activitytext}>
+            {' '}
+            Select Physical Activity Level
           </Text>
         </View>
-      </View>
 
-      <View style={styles.flexbox2}>
-        <Text style={styles.activitytext}> Select Physical Activity Level</Text>
-      </View>
+        <View style={styles.flexbox3}>
+          <TouchableOpacity
+            onPress={() => Check_Activity('Normal')}
+            style={[styles.button, {backgroundColor: backgroundColor1}]}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/sportman.png')}
+            />
+            <Text style={styles.text}>Normal</Text>
+          </TouchableOpacity>
 
-      <View style={styles.flexbox3}>
-        <TouchableOpacity
-          onPress={() => Check_Activity('Normal')}
-          style={[styles.button, {backgroundColor: backgroundColor1}]}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/sportman.png')}
-          />
-          <Text style={styles.text}>Normal</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => Check_Activity('Not Active')}
+            style={[styles.button, {backgroundColor: backgroundColor2}]}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/guy.png')}
+            />
+            <Text style={styles.text}>Not Active</Text>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity
-          onPress={() => Check_Activity('Not Active')}
-          style={[styles.button, {backgroundColor: backgroundColor2}]}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/guy.png')}
-          />
-          <Text style={styles.text}>Not Active</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.flexbox3}>
+          <TouchableOpacity
+            onPress={() => Check_Activity('Moderate')}
+            style={[styles.button, {backgroundColor: backgroundColor3}]}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/man.png')}
+            />
+            <Text style={styles.text}>Moderate</Text>
+          </TouchableOpacity>
 
-      <View style={styles.flexbox3}>
-        <TouchableOpacity
-          onPress={() => Check_Activity('Moderate')}
-          style={[styles.button, {backgroundColor: backgroundColor3}]}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/man.png')}
-          />
-          <Text style={styles.text}>Moderate</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => Check_Activity('Very Active')}
+            style={[styles.button, {backgroundColor: backgroundColor4}]}>
+            <Image
+              style={styles.image}
+              source={require('../assets/Images/businessman.png')}
+            />
+            <Text style={styles.text}>Very Active</Text>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity
-          onPress={() => Check_Activity('Very Active')}
-          style={[styles.button, {backgroundColor: backgroundColor4}]}>
-          <Image
-            style={styles.image}
-            source={require('../assets/Images/businessman.png')}
-          />
-          <Text style={styles.text}>Very Active</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.flexbox4}>
+          <TouchableOpacity
+            onPress={() => Calculate_Expenditure()}
+            disabled={!activityLevel}
+            style={!activityLevel ? styles.button2 : styles.button1}>
+            <Text style={styles.text}>Energy Expenditure</Text>
+          </TouchableOpacity>
 
-      <View style={styles.flexbox4}>
-        <TouchableOpacity
-          onPress={() => Calculate_Expenditure()}
-          disabled={!activityLevel}
-          style={!activityLevel ? styles.button2 : styles.button1}>
-          <Text style={styles.text}>Energy Expenditure</Text>
-        </TouchableOpacity>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              setModalVisible(!modalVisible);
+            }}>
+            <View style={styles.modalView}>
+              <View style={{marginLeft: 300}}>
+                <TouchableOpacity onPress={() => Close_Modal()}>
+                  <Icon name="close-circle-outline" size={27} color="white" />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.modalheading}>Your's TEE</Text>
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.modalView}>
-            <View style={{marginLeft: 300}}>
-              <TouchableOpacity onPress={() => Close_Modal()}>
-                <Icon name="close-circle-outline" size={27} color="white" />
-              </TouchableOpacity>
+              <ScrollView>
+                <Text style={styles.text_footer}>Weight</Text>
+
+                <View style={styles.flexbox5}>
+                  <Icon name="weight-kilogram" size={30} color="black" />
+                  <TextInput
+                    placeholder="Weight in KG"
+                    placeholderTextColor="#666666"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    keyboardType="numeric"
+                    onChangeText={text => handleweight(text)}
+                    returnKeyType="next"
+                    onSubmitEditing={() => {
+                      heightref.current.focus();
+                    }}
+                    blurOnSubmit={false}
+                  />
+                </View>
+
+                <Text style={styles.text_footer}>Height</Text>
+
+                <View style={styles.flexbox5}>
+                  <Icon name="human-male-height" size={26} color="black" />
+                  <TextInput
+                    placeholder="Height in meters"
+                    placeholderTextColor="#666666"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    keyboardType="numeric"
+                    onChangeText={text => handleheight(text)}
+                    ref={heightref}
+                    returnKeyType="next"
+                    onSubmitEditing={() => {
+                      ageref.current.focus();
+                    }}
+                    blurOnSubmit={false}
+                  />
+                </View>
+
+                <Text style={styles.text_footer}>Age</Text>
+
+                <View style={styles.flexbox5}>
+                  <Icon name="sort-numeric-ascending" size={27} color="black" />
+                  <TextInput
+                    placeholder="Your Age"
+                    placeholderTextColor="#666666"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    keyboardType="numeric"
+                    onChangeText={text => handleage(text)}
+                    ref={ageref}
+                  />
+                </View>
+
+                <Text style={styles.text_footer}>Gender</Text>
+
+                <View style={styles.picker}>
+                  <Picker
+                    selectedValue={data.gender}
+                    onValueChange={itemValue => handlegender(itemValue)}>
+                    <Picker.Item
+                      label="Select Gender"
+                      style={{fontSize: 18, fontWeight: 'bold'}}
+                      value="Select Gender"
+                    />
+
+                    <Picker.Item
+                      label="♂ Male"
+                      style={{fontSize: 18}}
+                      value="Male"
+                    />
+                    <Picker.Item
+                      label="♀ Female"
+                      style={{fontSize: 18}}
+                      value="Female"
+                    />
+                  </Picker>
+                </View>
+
+                <View style={styles.flexbox6}>
+                  <Text style={styles.OEE}>TEE = {OEE} KCal/day</Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => validateform()}
+                  style={styles.signIn}>
+                  <Text style={styles.textSign}>Calculate</Text>
+                </TouchableOpacity>
+              </ScrollView>
             </View>
-            <Text style={styles.modalheading}>Your's TEE</Text>
+          </Modal>
 
-            <ScrollView>
-              <Text style={styles.text_footer}>Weight</Text>
-
-              <View style={styles.flexbox5}>
-                <Icon name="weight-kilogram" size={30} color="black" />
-                <TextInput
-                  placeholder="Weight in KG"
-                  placeholderTextColor="#666666"
-                  style={styles.textInput}
-                  autoCapitalize="none"
-                  keyboardType="numeric"
-                  onChangeText={text => handleweight(text)}
-                />
-              </View>
-
-              <Text style={styles.text_footer}>Height</Text>
-
-              <View style={styles.flexbox5}>
-                <Icon name="human-male-height" size={26} color="black" />
-                <TextInput
-                  placeholder="Height in meters"
-                  placeholderTextColor="#666666"
-                  style={styles.textInput}
-                  autoCapitalize="none"
-                  keyboardType="numeric"
-                  onChangeText={text => handleheight(text)}
-                />
-              </View>
-
-              <Text style={styles.text_footer}>Age</Text>
-
-              <View style={styles.flexbox5}>
-                <Icon name="sort-numeric-ascending" size={27} color="black" />
-                <TextInput
-                  placeholder="Your Age"
-                  placeholderTextColor="#666666"
-                  style={styles.textInput}
-                  autoCapitalize="none"
-                  keyboardType="numeric"
-                  onChangeText={text => handleage(text)}
-                />
-              </View>
-
-              <Text style={styles.text_footer}>Gender</Text>
-
-              <View style={styles.picker}>
-                <Picker
-                  selectedValue={data.gender}
-                  onValueChange={itemValue => handlegender(itemValue)}>
-                  <Picker.Item
-                    label="Select Gender"
-                    style={{fontSize: 18, fontWeight: 'bold'}}
-                    value="Select Gender"
-                  />
-
-                  <Picker.Item
-                    label="♂ Male"
-                    style={{fontSize: 18}}
-                    value="Male"
-                  />
-                  <Picker.Item
-                    label="♀ Female"
-                    style={{fontSize: 18}}
-                    value="Female"
-                  />
-                </Picker>
-              </View>
-
-              <View style={styles.flexbox6}>
-                <Text style={styles.OEE}>TEE = {OEE} KCal/day</Text>
-              </View>
-
-              <TouchableOpacity
-                onPress={() => validateform()}
-                style={styles.signIn}>
-                <Text style={styles.textSign}>Calculate</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          </View>
-        </Modal>
-
-        <TouchableOpacity
-          onPress={() => setModalVisible(true)}
-          disabled={!activityLevel}
-          style={!activityLevel ? styles.button2 : styles.button1}>
-          <Text style={styles.text}>Calculate TEE</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            disabled={!activityLevel}
+            style={!activityLevel ? styles.button2 : styles.button1}>
+            <Text style={styles.text}>Calculate TEE</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  } else {
+    return (
+      <View style={styles.Landscapeconatiner}>
+        <View style={styles.Landscapeflexbox1}>
+          <View style={styles.Landscapecircle}>
+            <Text style={styles.Landscapecircletext}>BMR</Text>
+            <Text style={styles.Landscapebmitxet}>{mybmr}</Text>
+            <Text style={{textAlign: 'center', fontSize: 20, color: 'black'}}>
+              TEE = {EE} KCal/day
+            </Text>
+            <Text style={{textAlign: 'center', fontSize: 15, color: 'black'}}>
+              (Total Energy Expenditure)
+            </Text>
+          </View>
+        </View>
+
+        <View style={{flex: 0.6}}>
+          <View style={styles.Landscapeflexbox2}>
+            <Text style={styles.Landscapeactivitytext}>
+              Select Physical Activity Level
+            </Text>
+          </View>
+
+          <View style={styles.Landscapeflexbox3}>
+            <TouchableOpacity
+              onPress={() => Check_Activity('Normal')}
+              style={[
+                styles.Landscapebutton,
+                {backgroundColor: backgroundColor1},
+              ]}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/sportman.png')}
+              />
+              <Text style={styles.Landscapetext}>Normal</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => Check_Activity('Not Active')}
+              style={[
+                styles.Landscapebutton,
+                {backgroundColor: backgroundColor2},
+              ]}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/guy.png')}
+              />
+              <Text style={styles.Landscapetext}>Not Active</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.Landscapeflexbox3}>
+            <TouchableOpacity
+              onPress={() => Check_Activity('Moderate')}
+              style={[
+                styles.Landscapebutton,
+                {backgroundColor: backgroundColor3},
+              ]}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/man.png')}
+              />
+              <Text style={styles.Landscapetext}>Moderate</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => Check_Activity('Very Active')}
+              style={[
+                styles.Landscapebutton,
+                {backgroundColor: backgroundColor4},
+              ]}>
+              <Image
+                style={styles.Landscapeimage}
+                source={require('../assets/Images/businessman.png')}
+              />
+              <Text style={styles.Landscapetext}>Very Active</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.Landscapeflexbox4}>
+            <TouchableOpacity
+              onPress={() => Calculate_Expenditure()}
+              disabled={!activityLevel}
+              style={
+                !activityLevel
+                  ? styles.Landscapebutton2
+                  : styles.Landscapebutton1
+              }>
+              <Text style={styles.Landscapetext}>Energy Expenditure</Text>
+            </TouchableOpacity>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={styles.LandscapemodalView}>
+                <View style={{marginLeft: 300}}>
+                  <TouchableOpacity onPress={() => Close_Modal()}>
+                    <Icon name="close-circle-outline" size={27} color="white" />
+                  </TouchableOpacity>
+                </View>
+
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  <Text style={styles.Landscapemodalheading}>Your's TEE</Text>
+
+                  <Text style={styles.Landscapetext_footer}>Weight</Text>
+
+                  <View style={styles.Landscapeflexbox5}>
+                    <Icon name="weight-kilogram" size={30} color="black" />
+                    <TextInput
+                      placeholder="Weight in KG"
+                      placeholderTextColor="#666666"
+                      style={styles.LandscapetextInput}
+                      autoCapitalize="none"
+                      keyboardType="numeric"
+                      onChangeText={text => handleweight(text)}
+                      returnKeyType="next"
+                      onSubmitEditing={() => {
+                        heightref.current.focus();
+                      }}
+                      blurOnSubmit={false}
+                    />
+                  </View>
+
+                  <Text style={styles.Landscapetext_footer}>Height</Text>
+
+                  <View style={styles.Landscapeflexbox5}>
+                    <Icon name="human-male-height" size={26} color="black" />
+                    <TextInput
+                      placeholder="Height in meters"
+                      placeholderTextColor="#666666"
+                      style={styles.LandscapetextInput}
+                      autoCapitalize="none"
+                      keyboardType="numeric"
+                      onChangeText={text => handleheight(text)}
+                      ref={heightref}
+                      returnKeyType="next"
+                      onSubmitEditing={() => {
+                        ageref.current.focus();
+                      }}
+                      blurOnSubmit={false}
+                    />
+                  </View>
+
+                  <Text style={styles.Landscapetext_footer}>Age</Text>
+
+                  <View style={styles.Landscapeflexbox5}>
+                    <Icon
+                      name="sort-numeric-ascending"
+                      size={27}
+                      color="black"
+                    />
+                    <TextInput
+                      placeholder="Your Age"
+                      placeholderTextColor="#666666"
+                      style={styles.LandscapetextInput}
+                      autoCapitalize="none"
+                      keyboardType="numeric"
+                      onChangeText={text => handleage(text)}
+                      ref={ageref}
+                    />
+                  </View>
+
+                  <Text style={styles.Landscapetext_footer}>Gender</Text>
+
+                  <View style={styles.Landscapepicker}>
+                    <Picker
+                      selectedValue={data.Landscapegender}
+                      onValueChange={itemValue => handlegender(itemValue)}>
+                      <Picker.Item
+                        label="Select Gender"
+                        style={{fontSize: 18, fontWeight: 'bold'}}
+                        value="Select Gender"
+                      />
+
+                      <Picker.Item
+                        label="♂ Male"
+                        style={{fontSize: 18}}
+                        value="Male"
+                      />
+                      <Picker.Item
+                        label="♀ Female"
+                        style={{fontSize: 18}}
+                        value="Female"
+                      />
+                    </Picker>
+                  </View>
+
+                  <View style={styles.Landscapeflexbox6}>
+                    <Text style={styles.LandscapeOEE}>
+                      TEE = {OEE} KCal/day
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={() => validateform()}
+                    style={styles.LandscapesignIn}>
+                    <Text style={styles.LandscapetextSign}>Calculate</Text>
+                  </TouchableOpacity>
+                </ScrollView>
+              </View>
+            </Modal>
+
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              disabled={!activityLevel}
+              style={
+                !activityLevel
+                  ? styles.Landscapebutton2
+                  : styles.Landscapebutton1
+              }>
+              <Text style={styles.Landscapetext}>Calculate TEE</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
 };
 
 export default EnergyExpenditureScreen;

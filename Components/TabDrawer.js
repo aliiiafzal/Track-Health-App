@@ -20,7 +20,7 @@ const TabDrawer = () => {
           } else if (route.name === 'Settings') {
             iconName = focused ? 'ios-settings' : 'ios-settings-outline';
           }
-          return <Ionicons name={iconName} size={30} color={color} />;
+          return <Ionicons name={iconName} size={27} color={color} />;
         },
         tabBarActiveTintColor: '#4F96BD',
         tabBarInactiveTintColor: 'gray',

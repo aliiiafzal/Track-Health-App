@@ -7,7 +7,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import * as Animatable from 'react-native-animatable';
 import styles from '../Styles/LoginSignupScreenStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,12 +16,16 @@ import {Picker} from '@react-native-picker/picker';
 import {initializeApp} from 'firebase/app';
 import {firebaseConfig} from '../FirebaseConfig';
 import {getDatabase, ref, set, get, child} from 'firebase/database';
+import {CheckOrientation} from '../Components/CheckOrientation';
 
 const UserDeatil = ({route}) => {
   const navigation = useNavigation();
   const app = initializeApp(firebaseConfig);
   const dbRef = ref(getDatabase());
   const useremail = route.params.useremail;
+  const orientation = CheckOrientation();
+  const heightref = useRef();
+  const ageref = useRef();
 
   const [data, setData] = React.useState({
     weight: '',
@@ -163,86 +167,201 @@ const UserDeatil = ({route}) => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.text_header}>User Detail...</Text>
+  if (orientation === 'PORTRAIT') {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.text_header}>User Detail...</Text>
+        </View>
+
+        <Animatable.View animation="fadeInUpBig" style={styles.footer}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Text style={styles.text_footer}>Weight</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="weight-kilogram" size={30} color="black" />
+              <TextInput
+                placeholder="Weight in KG"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                onChangeText={text => handleweight(text)}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  heightref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
+            </View>
+
+            <Text style={styles.text_footer}>Height</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="human-male-height" size={26} color="black" />
+              <TextInput
+                placeholder="Height in meters"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                onChangeText={text => handleheight(text)}
+                ref={heightref}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  ageref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
+            </View>
+
+            <Text style={styles.text_footer}>Age</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="sort-numeric-ascending" size={27} color="black" />
+              <TextInput
+                placeholder="Your Age"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                onChangeText={text => handleage(text)}
+                ref={ageref}
+              />
+            </View>
+
+            <Text style={styles.text_footer}>Gender</Text>
+
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={data.gender}
+                onValueChange={itemValue => handlegender(itemValue)}>
+                <Picker.Item
+                  label="Select Gender"
+                  style={{fontSize: 18, fontWeight: 'bold'}}
+                  value="Select Gender"
+                />
+
+                <Picker.Item
+                  label="♂ Male"
+                  style={{fontSize: 18}}
+                  value="Male"
+                />
+                <Picker.Item
+                  label="♀ Female"
+                  style={{fontSize: 18}}
+                  value="Female"
+                />
+              </Picker>
+            </View>
+
+            <View style={styles.button1}>
+              <TouchableOpacity onPress={validateform} style={styles.signIn}>
+                <Text style={styles.textSign}>SUBMIT</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </Animatable.View>
       </View>
+    );
+  } else {
+    return (
+      <View style={styles.Landscapecontainer}>
+        <View style={styles.Landscapeheader}>
+          <Text style={styles.text_header}>User Detail...</Text>
+        </View>
 
-      <Animatable.View animation="fadeInUpBig" style={styles.footer}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.text_footer}>Weight</Text>
+        <Animatable.View animation="fadeInUpBig" style={styles.Landscapefooter}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Text style={styles.text_footer}>Weight</Text>
 
-          <View style={styles.flexbox1}>
-            <Icon name="weight-kilogram" size={30} color="black" />
-            <TextInput
-              placeholder="Weight in KG"
-              placeholderTextColor="#666666"
-              style={styles.textInput}
-              autoCapitalize="none"
-              keyboardType="numeric"
-              onChangeText={text => handleweight(text)}
-            />
-          </View>
-
-          <Text style={styles.text_footer}>Height</Text>
-
-          <View style={styles.flexbox1}>
-            <Icon name="human-male-height" size={26} color="black" />
-            <TextInput
-              placeholder="Height in meters"
-              placeholderTextColor="#666666"
-              style={styles.textInput}
-              autoCapitalize="none"
-              keyboardType="numeric"
-              onChangeText={text => handleheight(text)}
-            />
-          </View>
-
-          <Text style={styles.text_footer}>Age</Text>
-
-          <View style={styles.flexbox1}>
-            <Icon name="sort-numeric-ascending" size={27} color="black" />
-            <TextInput
-              placeholder="Your Age"
-              placeholderTextColor="#666666"
-              style={styles.textInput}
-              autoCapitalize="none"
-              keyboardType="numeric"
-              onChangeText={text => handleage(text)}
-            />
-          </View>
-
-          <Text style={styles.text_footer}>Gender</Text>
-
-          <View style={styles.picker}>
-            <Picker
-              selectedValue={data.gender}
-              onValueChange={itemValue => handlegender(itemValue)}>
-              <Picker.Item
-                label="Select Gender"
-                style={{fontSize: 18, fontWeight: 'bold'}}
-                value="Select Gender"
+            <View style={styles.flexbox1}>
+              <Icon name="weight-kilogram" size={30} color="black" />
+              <TextInput
+                placeholder="Weight in KG"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                onChangeText={text => handleweight(text)}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  heightref.current.focus();
+                }}
+                blurOnSubmit={false}
               />
+            </View>
 
-              <Picker.Item label="♂ Male" style={{fontSize: 18}} value="Male" />
-              <Picker.Item
-                label="♀ Female"
-                style={{fontSize: 18}}
-                value="Female"
+            <Text style={styles.text_footer}>Height</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="human-male-height" size={26} color="black" />
+              <TextInput
+                placeholder="Height in meters"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                onChangeText={text => handleheight(text)}
+                ref={heightref}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  ageref.current.focus();
+                }}
+                blurOnSubmit={false}
               />
-            </Picker>
-          </View>
+            </View>
 
-          <View style={styles.button1}>
-            <TouchableOpacity onPress={validateform} style={styles.signIn}>
-              <Text style={styles.textSign}>SUBMIT</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </Animatable.View>
-    </View>
-  );
+            <Text style={styles.text_footer}>Age</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="sort-numeric-ascending" size={27} color="black" />
+              <TextInput
+                placeholder="Your Age"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                onChangeText={text => handleage(text)}
+                ref={ageref}
+              />
+            </View>
+
+            <Text style={styles.text_footer}>Gender</Text>
+
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={data.gender}
+                onValueChange={itemValue => handlegender(itemValue)}>
+                <Picker.Item
+                  label="Select Gender"
+                  style={{fontSize: 18, fontWeight: 'bold'}}
+                  value="Select Gender"
+                />
+
+                <Picker.Item
+                  label="♂ Male"
+                  style={{fontSize: 18}}
+                  value="Male"
+                />
+                <Picker.Item
+                  label="♀ Female"
+                  style={{fontSize: 18}}
+                  value="Female"
+                />
+              </Picker>
+            </View>
+
+            <View style={styles.Landscapebutton1}>
+              <TouchableOpacity onPress={validateform} style={styles.signIn}>
+                <Text style={styles.textSign}>SUBMIT</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </Animatable.View>
+      </View>
+    );
+  }
 };
 
 export default UserDeatil;

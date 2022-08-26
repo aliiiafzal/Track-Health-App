@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Alert,
   ActivityIndicator,
   Modal,
+  ScrollView,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import styles from '../Styles/LoginSignupScreenStyles';
@@ -20,13 +21,16 @@ import {LOGIN_EMAIL} from '../Redux/Actions/LoginAction';
 import {initializeApp} from 'firebase/app';
 import {firebaseConfig} from '../FirebaseConfig';
 import {signInWithEmailAndPassword, getAuth} from '@firebase/auth';
+import {CheckOrientation} from '../Components/CheckOrientation';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const orientation = CheckOrientation();
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
+  const passwordref = useRef();
 
   const [data, setData] = React.useState({
     email: '',
@@ -88,7 +92,7 @@ const LoginScreen = () => {
           setModalVisible(false);
           //navigation.navigate('homescreen');
           navigation.navigate('tabdrawer');
-          Alert.alert(' Login Successfully');
+          //Alert.alert(' Login Successfully');
         }, 3000);
       }, null)
       .catch(error => {
@@ -113,92 +117,197 @@ const LoginScreen = () => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.text_header}>Welcome!</Text>
+  if (orientation === 'PORTRAIT') {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.text_header}>Welcome!</Text>
+        </View>
+
+        <Animatable.View animation="fadeInUpBig" style={styles.footer}>
+          <Text style={styles.text_footer}>Email</Text>
+
+          <View style={styles.flexbox1}>
+            <Icon name="email" size={30} color="black" />
+            <TextInput
+              placeholder="Your Email"
+              placeholderTextColor="#666666"
+              style={styles.textInput}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              onChangeText={text => handleemail(text)}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordref.current.focus();
+              }}
+              blurOnSubmit={false}
+            />
+          </View>
+          {data.isValidEmail ? null : (
+            <Animatable.View animation="fadeInLeft" duration={600}>
+              <Text style={styles.errorMsg}>Please Enter Valid Email.</Text>
+            </Animatable.View>
+          )}
+
+          <Text style={styles.text_footer}>Password</Text>
+
+          <View style={styles.flexbox1}>
+            <Icon name="key-variant" size={30} color="black" />
+            <TextInput
+              placeholder="Your Password"
+              placeholderTextColor="#666666"
+              secureTextEntry={true}
+              style={styles.textInput}
+              autoCapitalize="none"
+              keyboardType="default"
+              onChangeText={text => handlepassword(text)}
+              ref={passwordref}
+            />
+          </View>
+          {data.isValidPassword ? null : (
+            <Animatable.View animation="fadeInLeft" duration={600}>
+              <Text style={styles.errorMsg}>Please Enter Valid Password.</Text>
+            </Animatable.View>
+          )}
+
+          <TouchableOpacity>
+            <Text style={styles.forgot}>Forgot password?</Text>
+          </TouchableOpacity>
+
+          <View style={styles.button}>
+            <TouchableOpacity
+              disabled={!data.isValidEmail || !data.isValidPassword}
+              onPress={validateform}
+              style={
+                !data.isValidEmail || !data.isValidPassword
+                  ? styles.signIn1
+                  : styles.signIn
+              }
+              //style={styles.signIn}
+            >
+              <Text style={styles.textSign}>Sign In</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('signupscreen')}
+              style={styles.signIn}>
+              <Text style={styles.textSign}>Sign Up</Text>
+            </TouchableOpacity>
+
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={{marginTop: 400}}>
+                <ActivityIndicator size="large" color="#4F96BD" />
+              </View>
+            </Modal>
+          </View>
+        </Animatable.View>
       </View>
-
-      <Animatable.View animation="fadeInUpBig" style={styles.footer}>
-        <Text style={styles.text_footer}>Email</Text>
-
-        <View style={styles.flexbox1}>
-          <Icon name="email" size={30} color="black" />
-          <TextInput
-            placeholder="Your Email"
-            placeholderTextColor="#666666"
-            style={styles.textInput}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            onChangeText={text => handleemail(text)}
-          />
+    );
+  } else {
+    return (
+      <View style={styles.Landscapecontainer}>
+        <View style={styles.Landscapeheader}>
+          <Text style={styles.text_header}>Welcome!</Text>
         </View>
-        {data.isValidEmail ? null : (
-          <Animatable.View animation="fadeInLeft" duration={600}>
-            <Text style={styles.errorMsg}>Please Enter Valid Email.</Text>
-          </Animatable.View>
-        )}
 
-        <Text style={styles.text_footer}>Password</Text>
+        <Animatable.View animation="fadeInUpBig" style={styles.Landscapefooter}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Text style={styles.text_footer}>Email</Text>
 
-        <View style={styles.flexbox1}>
-          <Icon name="key-variant" size={30} color="black" />
-          <TextInput
-            placeholder="Your Password"
-            placeholderTextColor="#666666"
-            secureTextEntry={true}
-            style={styles.textInput}
-            autoCapitalize="none"
-            keyboardType="default"
-            onChangeText={text => handlepassword(text)}
-          />
-        </View>
-        {data.isValidPassword ? null : (
-          <Animatable.View animation="fadeInLeft" duration={600}>
-            <Text style={styles.errorMsg}>Please Enter Valid Password.</Text>
-          </Animatable.View>
-        )}
-
-        <TouchableOpacity>
-          <Text style={styles.forgot}>Forgot password?</Text>
-        </TouchableOpacity>
-
-        <View style={styles.button}>
-          <TouchableOpacity
-            disabled={!data.isValidEmail || !data.isValidPassword}
-            onPress={validateform}
-            style={
-              !data.isValidEmail || !data.isValidPassword
-                ? styles.signIn1
-                : styles.signIn
-            }
-            //style={styles.signIn}
-          >
-            <Text style={styles.textSign}>Sign In</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate('signupscreen')}
-            style={styles.signIn}>
-            <Text style={styles.textSign}>Sign Up</Text>
-          </TouchableOpacity>
-
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
-              setModalVisible(!modalVisible);
-            }}>
-            <View style={{marginTop: 400}}>
-              <ActivityIndicator size="large" color="#4F96BD" />
+            <View style={styles.flexbox1}>
+              <Icon name="email" size={30} color="black" />
+              <TextInput
+                placeholder="Your Email"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                onChangeText={text => handleemail(text)}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  passwordref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
             </View>
-          </Modal>
-        </View>
-      </Animatable.View>
-    </View>
-  );
+            {data.isValidEmail ? null : (
+              <Animatable.View animation="fadeInLeft" duration={600}>
+                <Text style={styles.errorMsg}>Please Enter Valid Email.</Text>
+              </Animatable.View>
+            )}
+
+            <Text style={styles.text_footer}>Password</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="key-variant" size={30} color="black" />
+              <TextInput
+                placeholder="Your Password"
+                placeholderTextColor="#666666"
+                secureTextEntry={true}
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="default"
+                onChangeText={text => handlepassword(text)}
+                ref={passwordref}
+              />
+            </View>
+            {data.isValidPassword ? null : (
+              <Animatable.View animation="fadeInLeft" duration={600}>
+                <Text style={styles.errorMsg}>
+                  Please Enter Valid Password.
+                </Text>
+              </Animatable.View>
+            )}
+
+            <TouchableOpacity>
+              <Text style={styles.forgot}>Forgot password?</Text>
+            </TouchableOpacity>
+
+            <View style={styles.Landscapebutton}>
+              <TouchableOpacity
+                disabled={!data.isValidEmail || !data.isValidPassword}
+                onPress={validateform}
+                style={
+                  !data.isValidEmail || !data.isValidPassword
+                    ? styles.signIn1
+                    : styles.signIn
+                }
+                //style={styles.signIn}
+              >
+                <Text style={styles.textSign}>Sign In</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate('signupscreen')}
+                style={styles.signIn}>
+                <Text style={styles.textSign}>Sign Up</Text>
+              </TouchableOpacity>
+
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  Alert.alert('Modal has been closed.');
+                  setModalVisible(!modalVisible);
+                }}>
+                <View style={{marginTop: 200}}>
+                  <ActivityIndicator size="large" color="#4F96BD" />
+                </View>
+              </Modal>
+            </View>
+          </ScrollView>
+        </Animatable.View>
+      </View>
+    );
+  }
 };
 
 export default LoginScreen;

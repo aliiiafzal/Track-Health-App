@@ -98,4 +98,37 @@ export default StyleSheet.create({
     color: '#FF0000',
     fontSize: 14,
   },
+
+  Landscapecontainer: {
+    flex: 1,
+    backgroundColor: '#4F96BD',
+    //marginHorizontal: '20%',
+  },
+
+  Landscapefooter: {
+    flex: 3,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    marginHorizontal: '15%',
+  },
+  Landscapeheader: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingBottom: 50,
+    marginHorizontal: '15%',
+  },
+  Landscapebutton: {
+    alignItems: 'center',
+    marginTop: 40,
+    marginHorizontal: '15%',
+  },
+  Landscapebutton1: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginHorizontal: '15%',
+  },
 });

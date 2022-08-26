@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   ScrollView,
   TouchableOpacity,
@@ -15,8 +15,10 @@ import {initializeApp} from 'firebase/app';
 import {firebaseConfig} from '../FirebaseConfig';
 import {getDatabase, ref, set} from 'firebase/database';
 import {useSelector, useDispatch} from 'react-redux';
+import {CheckOrientation} from '../Components/CheckOrientation';
 
 const WorkoutCalculatorScreen = ({route}) => {
+  const orientation = CheckOrientation();
   const navigation = useNavigation();
   const {myworkoutbmi} = route.params;
   //console.log(myworkoutbmi);
@@ -35,6 +37,7 @@ const WorkoutCalculatorScreen = ({route}) => {
     isValidRunning: false,
     isValidPushups: false,
   });
+  const pushupref = useRef();
 
   useEffect(() => {
     if (data.run > running || data.run < 0) {
@@ -150,98 +153,223 @@ const WorkoutCalculatorScreen = ({route}) => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.mainflex1}>
-          <View style={styles.flexbox1}>
-            <Text style={styles.heading}>My Health Status :: {resultText}</Text>
+  if (orientation === 'PORTRAIT') {
+    return (
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.mainflex1}>
+            <View style={styles.flexbox1}>
+              <Text style={styles.heading}>
+                My Health Status :: {resultText}
+              </Text>
+            </View>
+
+            <View style={styles.flexbox2}>
+              <ProgressCircle
+                percent={data.percent}
+                radius={90}
+                borderWidth={8}
+                color="#4F96BD"
+                shadowColor="white"
+                outerCircleStyle={styles.outcircle}
+                bgColor="lightblue">
+                <Icon name="run-fast" size={30} color="black" />
+                <Text style={styles.circletext}>{data.percent} %</Text>
+                <Text style={styles.circletext2}>of daily goal</Text>
+              </ProgressCircle>
+            </View>
+
+            <View style={styles.flexbox3}>
+              <TextInput
+                placeholder=" enter running in Km"
+                placeholderTextColor="#666666"
+                style={styles.inputtext}
+                keyboardType="numeric"
+                onChangeText={text => handlerunning(text)}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  pushupref.current.focus();
+                }}
+                blurOnSubmit={false}
+                autoFocus={true}
+              />
+
+              <Text style={styles.remainingtext}>{running - data.run}</Text>
+            </View>
+
+            <View style={styles.flexbox4}>
+              <Text style={styles.text1}>Km You Ran Today</Text>
+
+              <Text style={styles.text1}>Remaining Km</Text>
+            </View>
           </View>
 
-          <View style={styles.flexbox2}>
-            <ProgressCircle
-              percent={data.percent}
-              radius={90}
-              borderWidth={8}
-              color="#4F96BD"
-              shadowColor="white"
-              outerCircleStyle={styles.outcircle}
-              bgColor="lightblue">
-              <Icon name="run-fast" size={30} color="black" />
-              <Text style={styles.circletext}>{data.percent} %</Text>
-              <Text style={styles.circletext2}>of daily goal</Text>
-            </ProgressCircle>
+          <View style={styles.mainflex1}>
+            <View style={styles.flexbox2}>
+              <ProgressCircle
+                percent={data.pushupPercentage}
+                radius={90}
+                borderWidth={8}
+                color="#4F96BD"
+                shadowColor="white"
+                outerCircleStyle={styles.outcircle}
+                bgColor="lightblue">
+                <Icon name="arm-flex" size={30} color="black" />
+                <Text style={styles.circletext}>{data.pushupPercentage} %</Text>
+                <Text style={styles.circletext2}>of daily goal</Text>
+              </ProgressCircle>
+            </View>
+
+            <View style={styles.flexbox3}>
+              <TextInput
+                placeholder="enter pushups"
+                placeholderTextColor="#666666"
+                style={styles.inputtext}
+                keyboardType="numeric"
+                onChangeText={text => handlepushups(text)}
+                ref={pushupref}
+                autoFocus={true}
+              />
+
+              <Text style={styles.remainingtext}>{pushups - data.push}</Text>
+            </View>
+
+            <View style={styles.flexbox4}>
+              <Text style={styles.text1}>Pushups You Did Today</Text>
+
+              <Text style={styles.text1}>Remaining Pushups</Text>
+            </View>
           </View>
 
-          <View style={styles.flexbox3}>
-            <TextInput
-              placeholder="running in Km"
-              placeholderTextColor="#666666"
-              style={styles.inputtext}
-              keyboardType="numeric"
-              onChangeText={text => handlerunning(text)}
-            />
+          <View style={styles.flexbox5}>
+            <TouchableOpacity
+              onPress={() => validateform()}
+              disabled={!data.isValidRunning || !data.isValidPushups}
+              style={
+                !data.isValidRunning || !data.isValidPushups
+                  ? styles.button2
+                  : styles.button1
+              }>
+              <Text style={styles.text}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.Landscapecontainer}>
+        <View style={styles.Landscapeflexbox1}>
+          <Text style={styles.Landscapeheading}>
+            My Health Status :: {resultText}
+          </Text>
+        </View>
 
-            <Text style={styles.remainingtext}>{running - data.run}</Text>
+        <View style={styles.Landscapemainflex1}>
+          <View
+            style={{
+              flex: 0.5,
+              justifyContent: 'center',
+            }}>
+            <View style={styles.Landscapeflexbox2}>
+              <ProgressCircle
+                percent={data.percent}
+                radius={80}
+                borderWidth={7}
+                color="#4F96BD"
+                shadowColor="white"
+                outerCircleStyle={styles.outcircle}
+                bgColor="lightblue">
+                <Icon name="run-fast" size={30} color="black" />
+                <Text style={styles.Landscapecircletext}>{data.percent} %</Text>
+                <Text style={styles.Landscapecircletext2}>of daily goal</Text>
+              </ProgressCircle>
+            </View>
+
+            <View style={styles.Landscapeflexbox3}>
+              <TextInput
+                placeholder="enter running in Km"
+                placeholderTextColor="#666666"
+                style={styles.Landscapeinputtext}
+                keyboardType="numeric"
+                onChangeText={text => handlerunning(text)}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  pushupref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
+
+              <Text style={styles.Landscapetext1}>Km You Ran Today</Text>
+            </View>
+
+            <View style={styles.Landscapeflexbox4}>
+              <Text style={styles.Landscaperemainingtext}>
+                {running - data.run}
+              </Text>
+              <Text style={styles.Landscapetext1}>Remaining Km</Text>
+            </View>
           </View>
 
-          <View style={styles.flexbox4}>
-            <Text style={styles.text1}>Km You Ran Today</Text>
+          <View
+            style={{
+              flex: 0.5,
+              justifyContent: 'center',
+            }}>
+            <View style={styles.Landscapeflexbox2}>
+              <ProgressCircle
+                percent={data.pushupPercentage}
+                radius={80}
+                borderWidth={7}
+                color="#4F96BD"
+                shadowColor="white"
+                outerCircleStyle={styles.outcircle}
+                bgColor="lightblue">
+                <Icon name="run-fast" size={30} color="black" />
+                <Text style={styles.Landscapecircletext}>
+                  {data.pushupPercentage} %
+                </Text>
+                <Text style={styles.Landscapecircletext2}>of daily goal</Text>
+              </ProgressCircle>
+            </View>
 
-            <Text style={styles.text1}>Remaining Km</Text>
+            <View style={styles.Landscapeflexbox3}>
+              <TextInput
+                placeholder="enter pushups"
+                placeholderTextColor="#666666"
+                style={styles.Landscapeinputtext}
+                keyboardType="numeric"
+                onChangeText={text => handlepushups(text)}
+                ref={pushupref}
+              />
+
+              <Text style={styles.Landscapetext1}>Pushups You Did Today</Text>
+            </View>
+
+            <View style={styles.Landscapeflexbox4}>
+              <Text style={styles.Landscaperemainingtext}>
+                {pushups - data.push}
+              </Text>
+              <Text style={styles.Landscapetext1}>Remaining Pushups</Text>
+            </View>
           </View>
         </View>
 
-        <View style={styles.mainflex1}>
-          <View style={styles.flexbox2}>
-            <ProgressCircle
-              percent={data.pushupPercentage}
-              radius={90}
-              borderWidth={8}
-              color="#4F96BD"
-              shadowColor="white"
-              outerCircleStyle={styles.outcircle}
-              bgColor="lightblue">
-              <Icon name="arm-flex" size={30} color="black" />
-              <Text style={styles.circletext}>{data.pushupPercentage} %</Text>
-              <Text style={styles.circletext2}>of daily goal</Text>
-            </ProgressCircle>
-          </View>
-
-          <View style={styles.flexbox3}>
-            <TextInput
-              placeholder="pushups"
-              placeholderTextColor="#666666"
-              style={styles.inputtext}
-              keyboardType="numeric"
-              onChangeText={text => handlepushups(text)}
-            />
-
-            <Text style={styles.remainingtext}>{pushups - data.push}</Text>
-          </View>
-
-          <View style={styles.flexbox4}>
-            <Text style={styles.text1}>Pushups You Did Today</Text>
-
-            <Text style={styles.text1}>Remaining Pushups</Text>
-          </View>
-        </View>
-
-        <View style={styles.flexbox5}>
+        <View style={styles.Landscapeflexbox5}>
           <TouchableOpacity
             onPress={() => validateform()}
             disabled={!data.isValidRunning || !data.isValidPushups}
             style={
               !data.isValidRunning || !data.isValidPushups
-                ? styles.button2
-                : styles.button1
+                ? styles.Landscapebutton2
+                : styles.Landscapebutton1
             }>
-            <Text style={styles.text}>Save</Text>
+            <Text style={styles.Landscapetext}>Save</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
-    </View>
-  );
+      </View>
+    );
+  }
 };
 
 export default WorkoutCalculatorScreen;

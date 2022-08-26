@@ -7,7 +7,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import React from 'react';
+import React, {useRef} from 'react';
 import * as Animatable from 'react-native-animatable';
 import styles from '../Styles/LoginSignupScreenStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -20,12 +20,14 @@ import {
   getAuth,
   sendEmailVerification,
 } from '@firebase/auth';
+import {CheckOrientation} from '../Components/CheckOrientation';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const dbref = getDatabase(app);
+  const orientation = CheckOrientation();
 
   const [data, setData] = React.useState({
     username: '',
@@ -37,6 +39,9 @@ const SignupScreen = () => {
     isValidPassword: false,
     isValidConfirmPassword: false,
   });
+  const emailref = useRef();
+  const paswordref = useRef();
+  const cpasswordref = useRef();
 
   const senddata = () => {
     const username = data.username;
@@ -163,87 +168,207 @@ const SignupScreen = () => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.text_header}>Register Here!</Text>
+  if (orientation === 'PORTRAIT') {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.text_header}>Register Here!</Text>
+        </View>
+
+        <Animatable.View animation="fadeInUpBig" style={styles.footer}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Text style={styles.text_footer}>Username</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="user" size={30} color="black" />
+              <TextInput
+                placeholder="Your Name"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="default"
+                onChangeText={text => handleusername(text)}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  emailref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
+            </View>
+
+            <Text style={styles.text_footer}>Email</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="envelope" size={26} color="black" />
+              <TextInput
+                placeholder="Your Email"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                onChangeText={text => handleemail(text)}
+                ref={emailref}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  paswordref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
+            </View>
+
+            <Text style={styles.text_footer}>Password</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="key" size={27} color="black" />
+              <TextInput
+                placeholder="Your Password"
+                placeholderTextColor="#666666"
+                secureTextEntry={true}
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="default"
+                onChangeText={text => handlepassword(text)}
+                ref={paswordref}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  cpasswordref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
+            </View>
+
+            <Text style={styles.text_footer}>Confirm Password</Text>
+
+            <View style={styles.flexbox1}>
+              <Icon name="key" size={27} color="black" />
+              <TextInput
+                placeholder="Your Password"
+                placeholderTextColor="#666666"
+                secureTextEntry={true}
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="default"
+                onChangeText={text => handleconfirmpassword(text)}
+                ref={cpasswordref}
+              />
+            </View>
+
+            <View style={styles.button}>
+              <TouchableOpacity onPress={validateform} style={styles.signIn}>
+                <Text style={styles.textSign}>Sign Up</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate('loginscreen')}
+                style={styles.signIn}>
+                <Text style={styles.textSign}>Sign In</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </Animatable.View>
       </View>
+    );
+  } else {
+    return (
+      <View style={styles.Landscapecontainer}>
+        <View style={styles.Landscapeheader}>
+          <Text style={styles.text_header}>Register Here!</Text>
+        </View>
 
-      <Animatable.View animation="fadeInUpBig" style={styles.footer}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.text_footer}>Username</Text>
+        <Animatable.View animation="fadeInUpBig" style={styles.Landscapefooter}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Text style={styles.text_footer}>Username</Text>
 
-          <View style={styles.flexbox1}>
-            <Icon name="user" size={30} color="black" />
-            <TextInput
-              placeholder="Your Name"
-              placeholderTextColor="#666666"
-              style={styles.textInput}
-              autoCapitalize="none"
-              keyboardType="default"
-              onChangeText={text => handleusername(text)}
-            />
-          </View>
+            <View style={styles.flexbox1}>
+              <Icon name="user" size={30} color="black" />
+              <TextInput
+                placeholder="Your Name"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="default"
+                onChangeText={text => handleusername(text)}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  emailref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
+            </View>
 
-          <Text style={styles.text_footer}>Email</Text>
+            <Text style={styles.text_footer}>Email</Text>
 
-          <View style={styles.flexbox1}>
-            <Icon name="envelope" size={26} color="black" />
-            <TextInput
-              placeholder="Your Email"
-              placeholderTextColor="#666666"
-              style={styles.textInput}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              onChangeText={text => handleemail(text)}
-            />
-          </View>
+            <View style={styles.flexbox1}>
+              <Icon name="envelope" size={26} color="black" />
+              <TextInput
+                placeholder="Your Email"
+                placeholderTextColor="#666666"
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                onChangeText={text => handleemail(text)}
+                ref={emailref}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  paswordref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
+            </View>
 
-          <Text style={styles.text_footer}>Password</Text>
+            <Text style={styles.text_footer}>Password</Text>
 
-          <View style={styles.flexbox1}>
-            <Icon name="key" size={27} color="black" />
-            <TextInput
-              placeholder="Your Password"
-              placeholderTextColor="#666666"
-              secureTextEntry={true}
-              style={styles.textInput}
-              autoCapitalize="none"
-              keyboardType="default"
-              onChangeText={text => handlepassword(text)}
-            />
-          </View>
+            <View style={styles.flexbox1}>
+              <Icon name="key" size={27} color="black" />
+              <TextInput
+                placeholder="Your Password"
+                placeholderTextColor="#666666"
+                secureTextEntry={true}
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="default"
+                onChangeText={text => handlepassword(text)}
+                ref={paswordref}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  cpasswordref.current.focus();
+                }}
+                blurOnSubmit={false}
+              />
+            </View>
 
-          <Text style={styles.text_footer}>Confirm Password</Text>
+            <Text style={styles.text_footer}>Confirm Password</Text>
 
-          <View style={styles.flexbox1}>
-            <Icon name="key" size={27} color="black" />
-            <TextInput
-              placeholder="Your Password"
-              placeholderTextColor="#666666"
-              secureTextEntry={true}
-              style={styles.textInput}
-              autoCapitalize="none"
-              keyboardType="default"
-              onChangeText={text => handleconfirmpassword(text)}
-            />
-          </View>
+            <View style={styles.flexbox1}>
+              <Icon name="key" size={27} color="black" />
+              <TextInput
+                placeholder="Your Password"
+                placeholderTextColor="#666666"
+                secureTextEntry={true}
+                style={styles.textInput}
+                autoCapitalize="none"
+                keyboardType="default"
+                onChangeText={text => handleconfirmpassword(text)}
+                ref={cpasswordref}
+              />
+            </View>
 
-          <View style={styles.button}>
-            <TouchableOpacity onPress={validateform} style={styles.signIn}>
-              <Text style={styles.textSign}>Sign Up</Text>
-            </TouchableOpacity>
+            <View style={styles.Landscapebutton}>
+              <TouchableOpacity onPress={validateform} style={styles.signIn}>
+                <Text style={styles.textSign}>Sign Up</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate('loginscreen')}
-              style={styles.signIn}>
-              <Text style={styles.textSign}>Sign In</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </Animatable.View>
-    </View>
-  );
+              <TouchableOpacity
+                onPress={() => navigation.navigate('loginscreen')}
+                style={styles.signIn}>
+                <Text style={styles.textSign}>Sign In</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </Animatable.View>
+      </View>
+    );
+  }
 };
 
 export default SignupScreen;
